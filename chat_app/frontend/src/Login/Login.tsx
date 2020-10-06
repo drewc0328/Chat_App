@@ -1,108 +1,76 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router";
 
-import { Button, Modal, Card } from "react-bootstrap";
+import {
+  Button,
+  Modal,
+  Card,
+  Row,
+  Col,
+  Container,
+  InputGroup,
+  FormControl,
+} from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
+import SignupModal from "./SignupModal/SignupModal";
 import "./Login.css";
 
 const Login = () => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [openSignupModal, setOpenSignupModal] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
 
   return (
-    <React.Fragment>
+    <div className="joinOuterContainer">
       {loggedIn && <Redirect to="/home" />}
-      <form>
-        <div className="input-wrapper">
-          <div className="email-input">
-            <label>Email address</label>
-            <input
-              type="email"
-              className="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
-            />
-          </div>
-          <div className="password-input">
-            <label>Password</label>
-            <input
-              type="password"
-              className="form-control"
-              id="exampleInputPassword1"
-            />
-          </div>
-        </div>
-        <div className="login-button">
-          <button
-            type="submit"
-            className="btn btn-primary btn-lg active"
-            onClick={() => setLoggedIn(true)}
-          >
-            Login
-          </button>
-        </div>
-        <div className="signup-button">
-          <h5 className="sign-up-text">Don't have an account? Sign-up</h5>
-          <button
-            type="submit"
-            className="btn btn-secondary btn-lg active"
-            onClick={(e) => {
-              e.preventDefault();
-              setOpenSignupModal(true);
-            }}
-          >
-            Sign-up
-          </button>
-        </div>
-      </form>
-
-      {/* Signup Modal should be put into a separate component later */}
-      <Modal show={openSignupModal} animation={false}>
-        <Modal.Header closeButton onClick={() => setOpenSignupModal(false)}>
-          <Modal.Title>Create an Account</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="input-wrapper">
-            <div className="email-input">
-              <label>Email address</label>
-              <input
-                type="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
+      {openSignupModal && (
+        <SignupModal handleClose={() => setOpenSignupModal(false)} />
+      )}
+      <div className="joinInnerContainer">
+        <h1 className="heading">Join</h1>
+        <Container>
+          <Row className="email-row">
+            <InputGroup size="lg">
+              <FormControl
+                placeholder="Email"
+                aria-label="Large"
+                aria-describedby="inputGroup-sizing-sm"
               />
-            </div>
-            <div className="password-input">
-              <label>Password</label>
-              <input
+            </InputGroup>
+          </Row>
+          <Row className="password-row">
+            <InputGroup size="lg">
+              <FormControl
                 type="password"
-                className="form-control"
-                id="exampleInputPassword1"
+                placeholder="Password"
+                aria-label="Large"
+                aria-describedby="inputGroup-sizing-sm"
               />
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer className="modal-footer">
-          <Button
-            className="modal-close-button"
-            variant="secondary"
-            onClick={() => setOpenSignupModal(false)}
-          >
-            Close
-          </Button>
-          <Button
-            className="modal-submit-button"
-            variant="primary"
-            onClick={() => {
-              setOpenSignupModal(false);
-              setLoggedIn(true);
-            }}
-          >
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </React.Fragment>
+            </InputGroup>
+          </Row>
+          <Row className="button-row">
+            <Col>
+              <Button
+                onClick={() => setLoggedIn(true)}
+                className="login-button"
+                variant="outline-light"
+              >
+                Login
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                onClick={() => setOpenSignupModal(true)}
+                className="login-button"
+                variant="outline-light"
+              >
+                Sign-Up
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </div>
   );
 };
 
