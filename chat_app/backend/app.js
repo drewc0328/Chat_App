@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const UserRoutes = require("./routes/UserRoutes");
+const RoomRoutes = require("./routes/RoomRoutes");
 const HttpError = require("./models/HttpError");
 
 const app = express();
@@ -14,10 +15,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/api/users", UserRoutes);
-
-app.use("/", (req, res) => {
-  res.send("/");
-});
+app.use("/api/rooms", RoomRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError("Couldn't find this route", 404);

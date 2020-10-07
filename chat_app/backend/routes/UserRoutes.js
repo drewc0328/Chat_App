@@ -13,4 +13,8 @@ router.post("/signup", [
 
 router.post("/login", UserControllers.login);
 
+router.post("/joinRoom", UserControllers.joinRoom);
+
+router.post("/createRoom", UserControllers.createRoom);
+
 module.exports = router;

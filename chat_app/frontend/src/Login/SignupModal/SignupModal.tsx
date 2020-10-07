@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Button,
@@ -11,7 +11,16 @@ import {
 
 const SignupModal: React.FC<{
   handleClose: () => void;
+  handleSignup: (email: string, password: string, name: string) => void;
 }> = (props) => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [name, setName] = useState<string>("");
+
+  const signup = () => {
+    props.handleSignup(email, password, name);
+  };
+
   return (
     <Modal show={true}>
       <Modal.Header closeButton>
@@ -19,9 +28,20 @@ const SignupModal: React.FC<{
       </Modal.Header>
       <Modal.Body>
         <Container>
+          <Row className="name-row">
+            <InputGroup size="lg">
+              <FormControl
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Name"
+                aria-label="Large"
+                aria-describedby="inputGroup-sizing-sm"
+              />
+            </InputGroup>
+          </Row>
           <Row className="email-row">
             <InputGroup size="lg">
               <FormControl
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
                 aria-label="Large"
                 aria-describedby="inputGroup-sizing-sm"
@@ -31,6 +51,7 @@ const SignupModal: React.FC<{
           <Row className="password-row">
             <InputGroup size="lg">
               <FormControl
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 placeholder="Password"
                 aria-label="Large"
@@ -44,8 +65,8 @@ const SignupModal: React.FC<{
         <Button variant="secondary" onClick={props.handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={props.handleClose}>
-          Save Changes
+        <Button variant="primary" onClick={signup}>
+          Submit
         </Button>
       </Modal.Footer>
     </Modal>

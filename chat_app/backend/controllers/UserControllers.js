@@ -1,6 +1,8 @@
 const HttpError = require("../models/HttpError");
 const { validationResult } = require("express-validator");
 const User = require("../models/Users");
+const Room = require("../models/Rooms");
+const mongooseUniqueValidator = require("mongoose-unique-validator");
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
@@ -13,7 +15,7 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
   let existingUser;
   try {
@@ -32,6 +34,7 @@ const signup = async (req, res, next) => {
   }
 
   const createdUser = new User({
+    name,
     email,
     password,
   });
@@ -71,5 +74,58 @@ const login = async (req, res, next) => {
   res.json({ user: user.toObject({ getters: true }) });
 };
 
+const joinRoom = async (req, res, next) => {
+  const { userId, roomId } = req.body;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(err.message, 500);
+    return next(error);
+  }
+
+  let room;
+  try {
+    room = await Room.findById(roomId);
+  } catch (err) {
+    const error = new HttpError(err.message, 500);
+    return next(error);
+  }
+
+  user.rooms.push({
+    name: room.name,
+    id: room.id,
+  });
+
+  user.save();
+
+  res.json({ user: user });
+};
+
+// Create room differs from join because we can give room name as parameter
+const createRoom = async (req, res, next) => {
+  const { userId, roomId, roomName } = req.body;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(err.message, 500);
+    return next(error);
+  }
+
+  user.rooms.push({
+    name: roomName,
+    id: roomId,
+  });
+
+  user.save();
+
+  res.json({ user: user });
+};
+
 exports.signup = signup;
 exports.login = login;
+exports.joinRoom = joinRoom;
+exports.createRoom = createRoom;
