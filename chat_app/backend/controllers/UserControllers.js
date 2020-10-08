@@ -93,6 +93,8 @@ const joinRoom = async (req, res, next) => {
     return next(error);
   }
 
+  console.log("ROOOOM: ", room);
+
   user.rooms.push({
     name: room.name,
     id: room.id,
@@ -104,7 +106,7 @@ const joinRoom = async (req, res, next) => {
 };
 
 // Create room differs from join because we can give room name as parameter
-const createRoom = async (req, res, next) => {
+const joinCreatedRoom = async (req, res, next) => {
   const { userId, roomId, roomName } = req.body;
 
   let user;
@@ -128,4 +130,4 @@ const createRoom = async (req, res, next) => {
 exports.signup = signup;
 exports.login = login;
 exports.joinRoom = joinRoom;
-exports.createRoom = createRoom;
+exports.joinCreatedRoom = joinCreatedRoom;

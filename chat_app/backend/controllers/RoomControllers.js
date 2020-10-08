@@ -57,7 +57,7 @@ const addMember = async (req, res, next) => {
 
   room.save();
 
-  res.json({ room: room });
+  res.json({ room: { name: room.name, id: room.id } });
 };
 
 exports.createRoom = createRoom;

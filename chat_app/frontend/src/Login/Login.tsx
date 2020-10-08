@@ -35,7 +35,6 @@ const Login: React.FC<{
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name,
           email,
           password,
         }),
@@ -96,16 +95,6 @@ const Login: React.FC<{
       <div className="joinInnerContainer">
         <h1 className="heading">Join</h1>
         <Container>
-          <Row className="name-row">
-            <InputGroup size="lg">
-              <FormControl
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Name"
-                aria-label="Large"
-                aria-describedby="inputGroup-sizing-sm"
-              />
-            </InputGroup>
-          </Row>
           <Row className="email-row">
             <InputGroup size="lg">
               <FormControl
