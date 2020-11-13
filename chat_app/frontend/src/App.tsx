@@ -33,7 +33,7 @@ function App() {
           <HomePageContainer userData={user} getRoom={getRoom} />
         </Route>
         <Route exact path="/room">
-          <Room room={currentRoom} />
+          <Room user={user} room={currentRoom} />
         </Route>
         <Redirect to="/" />
       </Switch>

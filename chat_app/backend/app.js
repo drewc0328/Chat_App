@@ -2,17 +2,22 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const http = require("http");
+const socketio = require("socket.io");
+
 const UserRoutes = require("./routes/UserRoutes");
 const RoomRoutes = require("./routes/RoomRoutes");
 const HttpError = require("./models/HttpError");
 
 const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
 
 const connString =
   "mongodb+srv://Drew:bellabella444@cluster0.j0suz.mongodb.net/Test?retryWrites=true&w=majority";
 
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 app.use("/api/users", UserRoutes);
 app.use("/api/rooms", RoomRoutes);
@@ -37,7 +42,7 @@ const mongooseConnection = async () => {
       useUnifiedTopology: true,
     });
 
-    console.log(connection);
+    console.log("Connected to DB");
   } catch (err) {
     console.log(err);
   }
@@ -45,7 +50,44 @@ const mongooseConnection = async () => {
 
 mongooseConnection();
 
-app.listen(5000, () => {
+io.on("connection", (socket) => {
+  socket.on("join", ({ name, room }, callback) => {
+    const { error, user } = addUser({ id: socket.id, name, room });
+    console.log("JOIN USER: ", user);
+
+    if (error) {
+      return callback(error);
+    }
+
+    socket.emit("message", {
+      user: "admin",
+      text: `&{user.name}, welcome to the room ${user.room}`,
+    });
+    socket.broadcast
+      .to(user.room)
+      .emit("message", { user: "admin", text: `${user.name} has joined!` });
+
+    socket.join(user.room);
+
+    callback();
+  });
+
+  socket.on("sendMessage", (message, callback) => {
+    const user = getUser(socket.id);
+    console.log("User: ", user);
+    console.log("Message: ", message);
+
+    io.to(user.room).emit("message", { user: user.name, text: message });
+
+    callback();
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User has left");
+  });
+});
+
+server.listen(5000, () => {
   console.log("Server is running on port 5000!");
 });
 

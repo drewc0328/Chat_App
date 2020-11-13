@@ -60,5 +60,41 @@ const addMember = async (req, res, next) => {
   res.json({ room: { name: room.name, id: room.id } });
 };
 
+const saveMessage = async (req, res, next) => {
+  const { userId, roomId, message } = req.body;
+
+  let user;
+  try {
+    user = await Users.findById(userId);
+  } catch (err) {
+    const error = new HttpError(err.message, 500);
+    return next(error);
+  }
+
+  let room;
+  try {
+    room = await Room.findById(roomId);
+  } catch (err) {
+    const error = new HttpError(err.message, 500);
+    return next(error);
+  }
+
+  const newMessage = {
+    name: user.name,
+    message: message,
+  };
+
+  try {
+    await room.messages.push(newMessage);
+    await room.save();
+  } catch (err) {
+    const error = new HttpError(err.message, 500);
+    return next(error);
+  }
+
+  res.status(201).json({ message: { user: user.name, message: message } });
+};
+
 exports.createRoom = createRoom;
 exports.addMember = addMember;
+exports.saveMessage = saveMessage;
