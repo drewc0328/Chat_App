@@ -14,7 +14,7 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 const connString =
-  "mongodb+srv://Drew:bellabella444@cluster0.j0suz.mongodb.net/Test?retryWrites=true&w=majority";
+  "";
 
 app.use(cors());
 app.use(bodyParser.json());
